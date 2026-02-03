@@ -1,0 +1,12 @@
+flask
+flask-cors
+pyaudio
+pyttsx3
+SpeechRecognition
+pyautogui
+psutil
+pywhatkit
+wikipedia
+pyjokes
+scikit-learn
+requests
