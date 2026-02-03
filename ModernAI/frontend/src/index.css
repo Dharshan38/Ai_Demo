@@ -1,9 +1,12 @@
 :root {
-  --bg-dark: #0f0f13;
-  --bg-gradient: linear-gradient(135deg, #0d0d15 0%, #1a1a2e 100%);
-  --accent-color: #3b82f6;
+  --bg-dark: #0f130f;
+  /* Dark Green-ish Black */
+  --bg-gradient: linear-gradient(135deg, #0d150d 0%, #1a2e1a 100%);
+  --accent-color: #22c55e;
+  /* Green-500 */
   --text-primary: #ffffff;
-  --text-secondary: #a1a1aa;
+  --text-secondary: #86efac;
+  /* Green-200 */
 }
 
 body {
@@ -25,36 +28,94 @@ body {
   height: 100%;
 }
 
-/* Animations */
-@keyframes pulse-ring {
-  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
-  70% { transform: scale(1.1); box-shadow: 0 0 0 20px rgba(59, 130, 246, 0); }
-  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
-}
 
 @keyframes wave {
-  0% { height: 10px; }
-  50% { height: 50px; }
-  100% { height: 10px; }
+  0% {
+    height: 10px;
+  }
+
+  50% {
+    height: 50px;
+  }
+
+  100% {
+    height: 10px;
+  }
+}
+
+@keyframes ripple {
+  0% {
+    width: 100%;
+    height: 100%;
+    opacity: 0.8;
+    border-width: 2px;
+  }
+
+  100% {
+    width: 250%;
+    height: 250%;
+    opacity: 0;
+    border-width: 0px;
+  }
 }
 
 .orb {
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, #60a5fa, #2563eb);
-  box-shadow: 0 0 30px #2563eb, inset 0 0 20px rgba(255,255,255,0.5);
+  background: radial-gradient(circle at 30% 30%, #4ade80, #15803d);
+  /* Green Gradient */
+  box-shadow: 0 0 30px #15803d, inset 0 0 20px rgba(255, 255, 255, 0.5);
   position: relative;
   transition: all 0.5s ease;
+  z-index: 10;
+  /* Ensure orb is above ripples */
 }
 
+/* Listening State - Ripple Animation */
 .orb.listening {
-  animation: pulse-ring 2s infinite;
+  background: radial-gradient(circle at 30% 30%, #22c55e, #14532d);
+  box-shadow: 0 0 50px #22c55e;
 }
+
+.orb.listening::before,
+.orb.listening::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 1px solid #4ade80;
+  opacity: 0;
+  z-index: -1;
+  /* Behind the orb */
+  animation: ripple 2s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+
+.orb.listening::after {
+  animation-delay: 1s;
+}
+
 
 .orb.speaking {
-  box-shadow: 0 0 60px #8b5cf6, inset 0 0 30px rgba(255,255,255,0.7);
-  background: radial-gradient(circle at 30% 30%, #a78bfa, #7c3aed);
+  box-shadow: 0 0 60px #4ade80, inset 0 0 30px rgba(255, 255, 255, 0.7);
+  background: radial-gradient(circle at 30% 30%, #86efac, #166534);
+}
+
+/* Sentiment States */
+.orb.positive {
+  background: radial-gradient(circle at 30% 30%, #60a5fa, #1e40af) !important;
+  /* Blueish for positive */
+  box-shadow: 0 0 60px #3b82f6, inset 0 0 30px rgba(255, 255, 255, 0.5) !important;
+}
+
+.orb.negative {
+  background: radial-gradient(circle at 30% 30%, #f87171, #991b1b) !important;
+  /* Redish for negative */
+  box-shadow: 0 0 60px #ef4444, inset 0 0 30px rgba(255, 255, 255, 0.5) !important;
 }
 
 .orb-container {

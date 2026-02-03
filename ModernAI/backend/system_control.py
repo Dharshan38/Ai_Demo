@@ -36,38 +36,59 @@ class SystemController:
             pyautogui.press("volumemute")
             
     @staticmethod
+    def _run_with_delay(func, *args, delay=2.0):
+        import threading
+        import time
+        def wrapper():
+            time.sleep(delay)
+            func(*args)
+        threading.Thread(target=wrapper).start()
+
+    @staticmethod
     def open_app(app_name):
         app_name = app_name.lower()
         
+        # Helper to simplify calls
+        def launch(target):
+            if target.startswith("http"):
+                webbrowser.open(target)
+            elif target == "start spotify:":
+                os.system(target)
+            elif target == "explorer":
+                subprocess.Popen("explorer")
+            elif target == "win_search":
+                pyautogui.press("win")
+                pyautogui.write(app_name)
+                pyautogui.press("enter")
+            else:
+                 try: os.startfile(target)
+                 except: subprocess.Popen(target)
+
         # Web Apps
         if "youtube" in app_name:
-            webbrowser.open("https://www.youtube.com")
+            SystemController._run_with_delay(launch, "https://www.youtube.com")
             return "Opening YouTube"
         elif "google" in app_name:
-            webbrowser.open("https://www.google.com")
+            SystemController._run_with_delay(launch, "https://www.google.com")
             return "Opening Google"
         elif "spotify" in app_name:
-            # Try web or desktop
-            os.system("start spotify:") 
+            SystemController._run_with_delay(launch, "start spotify:") 
             return "Opening Spotify"
             
         # Desktop Apps
         try:
-            if "notepad" in app_name:
-                os.startfile("notepad.exe")
-            elif "calc" in app_name:
-                os.startfile("calc.exe")
-            elif "paint" in app_name:
-                os.startfile("mspaint.exe")
-            elif "explorer" in app_name:
-                subprocess.Popen("explorer")
-            elif "chrome" in app_name:
-                os.startfile("chrome.exe")
-            else:
-                pyautogui.press("win")
-                pyautogui.write(app_name)
-                pyautogui.press("enter")
-            return f"Opening {app_name}"
+            target = None
+            if "notepad" in app_name: target = "notepad.exe"
+            elif "calc" in app_name: target = "calc.exe"
+            elif "paint" in app_name: target = "mspaint.exe"
+            elif "explorer" in app_name: target = "explorer"
+            elif "chrome" in app_name: target = "chrome.exe"
+            else: target = "win_search"
+            
+            if target:
+                SystemController._run_with_delay(launch, target)
+                return f"Opening {app_name}"
+                
         except Exception as e:
             return f"Failed to open {app_name}: {str(e)}"
 
